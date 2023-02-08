@@ -29,7 +29,7 @@ namespace Microsoft.Spark.Network
         public DefaultSocketWrapper() :
             this(new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
         {
-            _innerSocket.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+            _innerSocket.Bind(new IPEndPoint(IPAddress.Any, 0));
         }
 
         /// <summary>

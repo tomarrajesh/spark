@@ -62,7 +62,7 @@ class DotnetBackend extends Logging {
       }
     })
 
-    channelFuture = bootstrap.bind(new InetSocketAddress("localhost", portNumber))
+    channelFuture = bootstrap.bind(new InetSocketAddress("0.0.0.0", portNumber))
     channelFuture.syncUninterruptibly()
     channelFuture.channel().localAddress().asInstanceOf[InetSocketAddress].getPort
   }
