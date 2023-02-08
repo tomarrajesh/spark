@@ -51,34 +51,27 @@ COPY . .
 
 COPY microsoft-spark-3-0_2.12-2.1.1.jar /app/jars/microsoft-spark-3-0_2.12-2.1.1.jar
 
-RUN ls
+WORKDIR /spark/src/csharp/Microsoft.Spark.Worker
 
-# # Define default command.
-# # CMD ["mvn", "--version"]
-# # WORKDIR /spark/src/scala
-# # RUN mvn clean package
+# RUN dotnet restore
+RUN dotnet publish -f netcoreapp3.1 -r linux-x64
 
-# WORKDIR /spark/src/csharp/Microsoft.Spark.Worker
-
-# # RUN dotnet restore
-# # RUN dotnet publish -f netcoreapp3.1 -r linux-x64
-
-# WORKDIR /spark
+WORKDIR /spark
 
 # COPY run-debug.sh /app/
 # RUN chmod a+x /app/run-debug.sh
 
-# ENV DOTNET_WORKER_DIR /spark/artifacts/bin/Microsoft.Spark.Worker/Debug/netcoreapp3.1/linux-x64
-# ENV DOTNETBACKEND_DEBUG_PORT 5567
-# ENV SPARK_MASTER_URL local
-# ENV ENABLE_INIT_DAEMON false
-# ENV SPARK_APPLICATION_MAIN_CLASS org.apache.spark.deploy.dotnet.DotnetRunner
-# # use the patched jar
-# ENV DOTNETBACKEND_JAR /app/jars/microsoft-spark-3-0_2.12-2.1.1.jar
+ENV DOTNET_WORKER_DIR /spark/artifacts/bin/Microsoft.Spark.Worker/Debug/netcoreapp3.1/linux-x64
+ENV DOTNETBACKEND_DEBUG_PORT 5567
+ENV SPARK_MASTER_URL local
+ENV ENABLE_INIT_DAEMON false
+ENV SPARK_APPLICATION_MAIN_CLASS org.apache.spark.deploy.dotnet.DotnetRunner
+# use the patched jar
+ENV DOTNETBACKEND_JAR /app/jars/microsoft-spark-3-0_2.12-2.1.1.jar
 
 
-# EXPOSE 5567
-# RUN ls
-# # ENTRYPOINT spark-submit --class ${SPARK_APPLICATION_MAIN_CLASS} --master ${SPARK_MASTER_URL} ${DOTNETBACKEND_JAR} debug
+EXPOSE 5567
+RUN ls
+# ENTRYPOINT ["spark-submit", "--class", "org.apache.spark.deploy.dotnet.DotnetRunner", "--master", "local", "/app/jars/microsoft-spark-3-0_2.12-2.1.1.jar", "debug"]
 
 # # CMD /app/run-debug.sh
