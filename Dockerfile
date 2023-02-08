@@ -14,22 +14,10 @@ RUN apt-get -y install python3 python3-pip
 # Install "software-properties-common" (for the "add-apt-repository")
 RUN apt-get update && apt-get install -y curl zip unzip
 RUN curl -s 'https://get.sdkman.io' | bash
-RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh; sdk version; sdk install java 8.0.302-open; sdk install maven 3.6.3"
 RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh; sdk version; sdk install java 8.0.302-open;"
 # Setup JAVA_HOME -- useful for docker commandline
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 RUN export JAVA_HOME
-
-# RUN apt-get -y install maven
-
-# ENV MAVEN_HOME /usr/share/maven
-# ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
-
-# ENV MAVEN_HOME /usr/share/maven
-# ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
-
-# # Define commonly used JAVA_HOME variable
-# ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
 # 3. download spark
 ARG SPARK_VERSION=3.0.2
@@ -61,14 +49,9 @@ ENV PATH="${SPARK_HOME}/bin:${DOTNET_WORKER_DIR}:${PATH}"
 #. copy dotnet source
 COPY . .
 
-FROM maven:3.6.3-jdk-8-slim as build-jar
-COPY --from=base . .
-RUN ls
-WORKDIR /spark/src/scala
-RUN mvn clean package
-RUN ls
+COPY microsoft-spark-3-0_2.12-2.1.1.jar /app/jars/microsoft-spark-3-0_2.12-2.1.1.jar
 
-# COPY src/scala/microsoft-spark-3-0/target/microsoft-spark-3-0_2.12-2.1.1.jar /app/jars/microsoft-spark-3-0_2.12-2.1.1.jar
+RUN ls
 
 # # Define default command.
 # # CMD ["mvn", "--version"]
